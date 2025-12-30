@@ -1,0 +1,101 @@
+.hub-container {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  background: var(--white);
+}
+
+.hub-header {
+  max-width: 1400px;
+  margin: 0 auto 4rem;
+}
+
+.hub-header h1 {
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 1rem;
+  color: var(--black);
+}
+
+.hub-subtitle {
+  font-size: 1.25rem;
+  color: var(--gray-600);
+  font-weight: 400;
+}
+
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 1px;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: var(--black);
+  border: 1px solid var(--black);
+}
+
+.module-card {
+  background: var(--white);
+  padding: 3rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  border: none;
+}
+
+.module-card:hover {
+  background: var(--black);
+  color: var(--white);
+}
+
+.module-card:hover .module-name {
+  color: var(--white);
+}
+
+.module-card:hover .module-description {
+  color: var(--gray-300);
+}
+
+.module-card.premium::after {
+  content: 'PRO';
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--black);
+}
+
+.module-card.premium:hover::after {
+  color: var(--white);
+}
+
+.module-icon {
+  display: none;
+}
+
+.module-name {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  color: var(--black);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.module-description {
+  color: var(--gray-600);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.premium-badge {
+  display: none;
+}
+
+.hub-footer {
+  text-align: center;
+  color: var(--gray-500);
+  margin-top: 8rem;
+  font-size: 0.875rem;
+}

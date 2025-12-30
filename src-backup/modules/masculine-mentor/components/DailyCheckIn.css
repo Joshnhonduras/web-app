@@ -1,0 +1,188 @@
+.daily-checkin {
+  min-height: 100vh;
+  background: var(--white);
+}
+
+.checkin-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--black);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.checkin-header h2 {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.checkin-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.streak-banner {
+  background: var(--black);
+  color: var(--white);
+  padding: 4rem 2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  border: 1px solid var(--black);
+}
+
+.streak-number {
+  font-size: 6rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.04em;
+}
+
+.streak-label {
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.checkin-form {
+  background: var(--white);
+  border: 1px solid var(--black);
+  padding: 3rem;
+  margin-bottom: 3rem;
+}
+
+.checkin-form h3 {
+  margin-top: 0;
+  margin-bottom: 2rem;
+  color: var(--black);
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.mood-selector {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  margin-bottom: 2rem;
+  background: var(--black);
+  border: 1px solid var(--black);
+}
+
+.mood-btn {
+  padding: 2rem 1rem;
+  border: none;
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mood-btn:hover {
+  background: var(--gray-100);
+}
+
+.mood-btn.active {
+  background: var(--black);
+  color: var(--white);
+}
+
+.mood-emoji {
+  display: none;
+}
+
+.mood-label {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.checkin-form textarea {
+  width: 100%;
+  padding: 1.25rem;
+  border: 1px solid var(--black);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: vertical;
+  margin-bottom: 2rem;
+  background: var(--white);
+  color: var(--black);
+  min-height: 150px;
+  line-height: 1.6;
+}
+
+.checkin-form textarea:focus {
+  outline: 2px solid var(--black);
+  outline-offset: -2px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 1.25rem;
+  background: var(--black);
+  color: var(--white);
+  border: 1px solid var(--black);
+  font-size: 1.125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.submit-btn:hover {
+  background: var(--white);
+  color: var(--black);
+}
+
+.history-section {
+  background: var(--white);
+  border: 1px solid var(--black);
+  padding: 3rem;
+}
+
+.history-section h3 {
+  margin-top: 0;
+  color: var(--black);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--black);
+  border: 1px solid var(--black);
+}
+
+.history-item {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 2rem;
+  padding: 1.5rem;
+  background: var(--white);
+  align-items: center;
+}
+
+.history-date {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.history-mood {
+  display: none;
+}
+
+.history-reflection {
+  color: var(--black);
+  line-height: 1.6;
+}

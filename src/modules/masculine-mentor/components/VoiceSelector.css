@@ -1,0 +1,161 @@
+.voice-selector {
+  margin-top: 1.5rem;
+}
+
+.voice-selector h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.voice-help {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.no-voices {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.voices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.voice-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.voice-item:hover {
+  border-color: var(--accent);
+  background: white;
+}
+
+.voice-item.selected {
+  border-color: #075e54;
+  background: #e8f5f3;
+}
+
+.voice-info {
+  flex: 1;
+}
+
+.voice-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.voice-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.quality-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quality-badge.premium {
+  background: #10b981;
+  color: white;
+}
+
+.quality-badge.standard {
+  background: #3b82f6;
+  color: white;
+}
+
+.quality-badge.basic {
+  background: #6b7280;
+  color: white;
+}
+
+.voice-details {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.voice-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.test-btn,
+.select-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.test-btn {
+  background: white;
+  color: var(--text-primary);
+}
+
+.test-btn:hover:not(:disabled) {
+  background: var(--bg-secondary);
+}
+
+.test-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.select-btn {
+  background: #075e54;
+  color: white;
+  border-color: #075e54;
+}
+
+.select-btn:hover {
+  background: #064e45;
+}
+
+.voice-tip {
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.voice-tip strong {
+  color: #92400e;
+}
+
+.voice-tip code {
+  display: block;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: #fef3c7;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.85rem;
+}

@@ -1,0 +1,220 @@
+.voice-chat-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.voice-start {
+  text-align: center;
+  padding: 2rem;
+}
+
+.voice-start h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.voice-start p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+.start-call-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 1.5rem 3rem;
+  border-radius: 50px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+}
+
+.start-call-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(16, 185, 129, 0.5);
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.voice-error {
+  text-align: center;
+  padding: 2rem;
+}
+
+.voice-error h2 {
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.voice-error p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
+.voice-active {
+  width: 100%;
+  max-width: 500px;
+  padding: 2rem;
+}
+
+.call-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.call-info h2 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.call-status {
+  color: #10b981;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.call-duration {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-top: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.voice-visual {
+  display: flex;
+  justify-content: center;
+  margin: 3rem 0;
+}
+
+.audio-indicator {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+  height: 100px;
+  padding: 1rem;
+}
+
+.wave {
+  width: 8px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.audio-indicator.listening .wave {
+  animation: listening 1.2s ease-in-out infinite;
+  background: #10b981;
+}
+
+.audio-indicator.speaking .wave {
+  animation: speaking 0.6s ease-in-out infinite;
+  background: #3b82f6;
+}
+
+.wave:nth-child(1) { animation-delay: 0s; }
+.wave:nth-child(2) { animation-delay: 0.1s; }
+.wave:nth-child(3) { animation-delay: 0.2s; }
+.wave:nth-child(4) { animation-delay: 0.3s; }
+.wave:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes listening {
+  0%, 100% { height: 20px; }
+  50% { height: 60px; }
+}
+
+@keyframes speaking {
+  0%, 100% { height: 20px; }
+  50% { height: 80px; }
+}
+
+.live-transcript {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin: 2rem 0;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.live-transcript p {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+.call-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.control-btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 1.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.control-btn.active {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.control-btn.end-btn {
+  background: #ef4444;
+  border-color: #ef4444;
+  transform: rotate(135deg);
+}
+
+.control-btn.end-btn:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  transform: rotate(135deg) scale(1.05);
+}
+
+.call-error {
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+}

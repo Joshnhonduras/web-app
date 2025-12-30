@@ -1,0 +1,183 @@
+.persona-wizard {
+  min-height: 100vh;
+  background: var(--white);
+}
+
+.persona-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--black);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.persona-header h2 {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.persona-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.persona-section {
+  background: var(--white);
+  border: 1px solid var(--black);
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.persona-section h3 {
+  margin-top: 0;
+  color: var(--black);
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  letter-spacing: -0.02em;
+}
+
+.section-description {
+  color: var(--gray-600);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.slider-group {
+  margin-bottom: 2.5rem;
+}
+
+.slider-group:last-child {
+  margin-bottom: 0;
+}
+
+.slider-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--black);
+  font-size: 1.125rem;
+  letter-spacing: -0.01em;
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--gray-500);
+  margin-bottom: 1rem;
+}
+
+.slider {
+  width: 100%;
+  height: 2px;
+  background: var(--black);
+  outline: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--black);
+  cursor: pointer;
+  border: none;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--black);
+  cursor: pointer;
+  border: none;
+}
+
+.tone-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px;
+  background: var(--black);
+  border: 1px solid var(--black);
+}
+
+.tone-btn {
+  padding: 1.25rem;
+  border: none;
+  background: var(--white);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--black);
+  letter-spacing: 0.01em;
+}
+
+.tone-btn:hover {
+  background: var(--gray-100);
+}
+
+.tone-btn.active {
+  background: var(--black);
+  color: var(--white);
+}
+
+.preview-section {
+  background: var(--gray-50);
+  border: 1px solid var(--black);
+  padding: 3rem;
+  margin-bottom: 2rem;
+}
+
+.preview-section h3 {
+  margin-top: 0;
+  color: var(--black);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  letter-spacing: -0.01em;
+}
+
+.preview-box {
+  background: var(--white);
+  padding: 2rem;
+  border: 1px solid var(--black);
+}
+
+.preview-box p {
+  margin: 1rem 0;
+  line-height: 1.7;
+  color: var(--gray-700);
+}
+
+.preview-box p strong {
+  color: var(--black);
+  font-weight: 600;
+}
+
+.save-btn {
+  width: 100%;
+  padding: 1.25rem;
+  background: var(--black);
+  color: var(--white);
+  border: 1px solid var(--black);
+  font-size: 1.125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.save-btn:hover {
+  background: var(--white);
+  color: var(--black);
+}

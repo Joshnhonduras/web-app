@@ -1,0 +1,142 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--white);
+}
+
+.chat-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--black);
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chat-header h2 {
+  margin: 0;
+  flex: 1;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--black);
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--gray-500);
+  margin: auto;
+  font-size: 1rem;
+}
+
+.empty-state .hint {
+  font-size: 0.875rem;
+  color: var(--gray-400);
+  margin-top: 0.5rem;
+}
+
+.message {
+  max-width: 80%;
+  padding: 1.5rem;
+  border: 1px solid var(--black);
+  position: relative;
+}
+
+.message.user {
+  background: var(--black);
+  color: var(--white);
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.message.assistant {
+  background: var(--white);
+  color: var(--black);
+  align-self: flex-start;
+}
+
+.message-content {
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.bookmark-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: 1px solid currentColor;
+  font-size: 0.875rem;
+  cursor: pointer;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+  padding: 0.25rem 0.5rem;
+}
+
+.bookmark-btn:hover,
+.bookmark-btn.active {
+  opacity: 1;
+}
+
+.input-container {
+  background: var(--white);
+  border-top: 1px solid var(--black);
+  padding: 2rem;
+  display: flex;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.input-container textarea {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid var(--black);
+  font-family: inherit;
+  font-size: 1rem;
+  resize: none;
+  background: var(--white);
+  color: var(--black);
+}
+
+.input-container textarea:focus {
+  outline: 2px solid var(--black);
+  outline-offset: -2px;
+}
+
+.input-container button {
+  padding: 1rem 2rem;
+  background: var(--black);
+  color: var(--white);
+  border: 1px solid var(--black);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.input-container button:hover:not(:disabled) {
+  background: var(--white);
+  color: var(--black);
+}
+
+.input-container button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
