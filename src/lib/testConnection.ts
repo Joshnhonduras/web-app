@@ -16,8 +16,9 @@ export async function testAPIConnection(apiConfig: APIConfig): Promise<{ success
       default:
         return { success: false, message: 'Invalid provider' };
     }
-  } catch (error: any) {
-    return { success: false, message: error.message || 'Connection failed' };
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Connection failed';
+    return { success: false, message };
   }
 }
 

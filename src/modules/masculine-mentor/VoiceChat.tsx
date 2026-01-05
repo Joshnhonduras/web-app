@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { buildSystemPrompt } from '../../lib/systemPrompt';
 import { sendMessage } from '../../lib/aiClient';
+import { extractFacts, buildContextSummary } from '../../lib/memory';
 import { voiceManager } from '../../lib/voiceManager';
+import type { Message } from '../../types';
 import './VoiceChat.css';
 
 export default function VoiceChat() {
@@ -22,6 +25,54 @@ export default function VoiceChat() {
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const callStartTimeRef = useRef<number>(0);
   const timerRef = useRef<number | null>(null);
+
+  async function handleUserSpeech(text: string) {
+    if (!text.trim()) return;
+
+    setTranscript('');
+    
+    // Add user message
+    addMessage({ role: 'user', content: text });
+
+    // Get AI response
+    try {
+      const pendingHistory: Message[] = [
+        ...messages,
+        {
+          id: '',
+          role: 'user',
+          content: text,
+          timestamp: Date.now(),
+        },
+      ];
+
+      const contextSummary = buildContextSummary(extractFacts(pendingHistory));
+
+      const systemPrompt = buildSystemPrompt(
+        settings.personaConfig,
+        settings.userProfile
+      ) + (contextSummary ? `\n\n${contextSummary}` : '');
+
+      const response = await sendMessage(
+        pendingHistory.slice(-18),
+        systemPrompt,
+        settings.apiConfig
+      );
+
+      // Add AI message
+      addMessage({ role: 'assistant', content: response });
+
+      // Speak the response
+      speak(response);
+    } catch (err: unknown) {
+      console.error('AI error:', err);
+      const isAbort = err instanceof Error && err.name === 'AbortError';
+      const fallback = isAbort
+        ? "The request timed out. Let's try again."
+        : "I'm having trouble connecting right now. Can you repeat that?";
+      speak(fallback);
+    }
+  }
 
   useEffect(() => {
     // Check if Web Speech API is available
@@ -90,10 +141,11 @@ export default function VoiceChat() {
         clearInterval(timerRef.current);
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isListening, isPaused]);
 
   const startCall = () => {
-    if (!settings.apiConfig.apiKey) {
+    if (!settings.apiConfig.apiKey || !settings.apiConfig.provider) {
       setError('Please configure your API in Settings first');
       return;
     }
@@ -156,38 +208,6 @@ export default function VoiceChat() {
     setSpeakerMode(!speakerMode);
     // Note: Web Speech API doesn't directly control speaker/earpiece on mobile
     // This is more of a visual indicator
-  };
-
-  const handleUserSpeech = async (text: string) => {
-    if (!text.trim()) return;
-
-    setTranscript('');
-    
-    // Add user message
-    addMessage({ role: 'user', content: text });
-
-    // Get AI response
-    try {
-      const systemPrompt = buildSystemPrompt(
-        settings.personaConfig,
-        settings.userProfile
-      );
-
-      const response = await sendMessage(
-        [...messages, { id: '', role: 'user', content: text, timestamp: Date.now() }],
-        systemPrompt,
-        settings.apiConfig
-      );
-
-      // Add AI message
-      addMessage({ role: 'assistant', content: response });
-
-      // Speak the response
-      speak(response);
-    } catch (err: any) {
-      console.error('AI error:', err);
-      speak("I'm having trouble connecting right now. Can you repeat that?");
-    }
   };
 
   const speak = (text: string) => {

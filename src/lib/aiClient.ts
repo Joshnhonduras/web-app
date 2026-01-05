@@ -1,5 +1,18 @@
 import type { Message, APIConfig } from '../types';
 
+const DEFAULT_TIMEOUT_MS = 20000;
+
+async function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit, timeoutMs = DEFAULT_TIMEOUT_MS) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export async function sendMessage(
   messages: Message[],
   systemPrompt: string,
@@ -36,7 +49,7 @@ async function callOpenRouter(
 
   const model = apiConfig.model || 'meta-llama/llama-3.1-8b-instruct:free';
 
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+  const response = await fetchWithTimeout('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiConfig.apiKey}`,
@@ -48,7 +61,7 @@ async function callOpenRouter(
       model,
       messages: formattedMessages,
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: 4000,
     }),
   });
 
@@ -74,7 +87,7 @@ async function callOpenAI(
     })),
   ];
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetchWithTimeout('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiConfig.apiKey}`,
@@ -84,7 +97,7 @@ async function callOpenAI(
       model: apiConfig.model || 'gpt-4o-mini',
       messages: formattedMessages,
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: 4000,
     }),
   });
 
@@ -110,7 +123,7 @@ async function callGroq(
     })),
   ];
 
-  const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+  const response = await fetchWithTimeout('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${apiConfig.apiKey}`,
@@ -120,7 +133,7 @@ async function callGroq(
       model: apiConfig.model || 'llama-3.3-70b-versatile',
       messages: formattedMessages,
       temperature: 0.7,
-      max_tokens: 500,
+      max_tokens: 4000,
     }),
   });
 

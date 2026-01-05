@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useState, useEffect } from 'react';
 import { getModelsForProvider, formatPricing, type ModelInfo } from '../../../lib/modelCatalog';
 import './ModelSelector.css';
@@ -12,16 +13,23 @@ export default function ModelSelector({ provider, selectedModel, onSelect }: Mod
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [loading, setLoading] = useState(false);
   const [showFreeOnly, setShowFreeOnly] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!provider) {
       setModels([]);
+      setError(null);
       return;
     }
 
     setLoading(true);
+    setError(null);
     getModelsForProvider(provider)
       .then(setModels)
+      .catch((err) => {
+        console.error('Model fetch failed', err);
+        setError('Failed to load models. Try again or select another provider.');
+      })
       .finally(() => setLoading(false));
   }, [provider]);
 
@@ -54,11 +62,12 @@ export default function ModelSelector({ provider, selectedModel, onSelect }: Mod
         )}
       </div>
 
-      {loading ? (
-        <div className="loading-models">Loading models...</div>
-      ) : filteredModels.length === 0 ? (
+      {loading && <div className="loading-models">Loading models...</div>}
+      {!loading && error && <div className="alert alert-error">{error}</div>}
+      {!loading && !error && filteredModels.length === 0 && (
         <div className="no-models">No models available</div>
-      ) : (
+      )}
+      {!loading && !error && filteredModels.length > 0 && (
         <select 
           value={selectedModel || ''} 
           onChange={(e) => onSelect(e.target.value)}
@@ -84,9 +93,11 @@ export default function ModelSelector({ provider, selectedModel, onSelect }: Mod
                 <div className="model-detail">
                   <strong>Context Length:</strong> {model.contextLength?.toLocaleString() || 'Unknown'} tokens
                 </div>
-                <div className="model-detail">
-                  <strong>Pricing:</strong> {formatPricing(model.pricing!)}
-                </div>
+                {model.pricing && (
+                  <div className="model-detail">
+                    <strong>Pricing:</strong> {formatPricing(model.pricing)}
+                  </div>
+                )}
                 {model.free && (
                   <div className="free-badge-large">✨ FREE MODEL</div>
                 )}

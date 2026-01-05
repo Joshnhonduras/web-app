@@ -36,9 +36,20 @@ export interface VoiceConfig {
   pitch: number;
 }
 
+export interface TrialStatus {
+  isActive: boolean;
+  tokensUsed: number;
+  tokensLimit: number;
+  startedAt: number | null;
+  email?: string;
+  createdAt?: number;
+}
+
 export interface AppSettings {
   apiConfig: APIConfig;
   voiceConfig: VoiceConfig;
   personaConfig: PersonaConfig;
   userProfile: UserProfile;
+  sessionMode?: boolean; // when true, limit or skip persistence
+  trial?: TrialStatus;
 }

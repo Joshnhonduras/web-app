@@ -1,13 +1,14 @@
 import { useState } from 'react';
+import type { ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../../lib/store';
 import { testAPIConnection } from '../../lib/testConnection';
 import VoiceSelector from './components/VoiceSelector';
 import ModelSelector from './components/ModelSelector';
+import type { APIConfig } from '../../types';
 import './Settings.css';
 
 export default function Settings() {
-  const { settings, updateSettings, clearMessages } = useStore();
   const [activeTab, setActiveTab] = useState<'api' | 'persona' | 'voice' | 'profile' | 'data'>('api');
 
   return (
@@ -64,14 +65,19 @@ export default function Settings() {
 function APISettings() {
   const { settings, updateSettings } = useStore();
   const [apiKey, setApiKey] = useState(settings.apiConfig.apiKey);
-  const [provider, setProvider] = useState(settings.apiConfig.provider || 'openrouter');
+  const [provider, setProvider] = useState<APIConfig['provider']>(settings.apiConfig.provider || 'openrouter');
   const [model, setModel] = useState(settings.apiConfig.model || '');
   const [testStatus, setTestStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
+  const isValid = Boolean(provider && apiKey);
 
   const handleSave = () => {
+    if (!isValid) {
+      alert('Select a provider and enter an API key first.');
+      return;
+    }
     updateSettings({
       apiConfig: {
-        provider: provider as any,
+        provider,
         apiKey,
         model,
       },
@@ -81,7 +87,7 @@ function APISettings() {
 
   const testConnection = async () => {
     setTestStatus('testing');
-    const result = await testAPIConnection({ provider: provider as any, apiKey, model });
+    const result = await testAPIConnection({ provider, apiKey, model });
     setTestStatus(result.success ? 'success' : 'error');
     if (!result.success) {
       alert(result.message);
@@ -97,7 +103,7 @@ function APISettings() {
 
       <div className="form-group">
         <label>Provider</label>
-        <select value={provider} onChange={(e) => setProvider(e.target.value)}>
+        <select value={provider ?? ''} onChange={(e: ChangeEvent<HTMLSelectElement>) => setProvider(e.target.value as APIConfig['provider'])}>
           <option value="">-- Select Provider --</option>
           <option value="groq">Groq (FREE - Recommended)</option>
           <option value="openrouter">OpenRouter (Free & Paid options)</option>
@@ -110,14 +116,14 @@ function APISettings() {
         <input
           type="password"
           value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setApiKey(e.target.value)}
           placeholder="sk-..."
         />
-        <small>Your key is stored locally and never shared</small>
+        <small>Your key is stored locally and never shared. Enable Private Session in Privacy to avoid persistence.</small>
       </div>
 
       <ModelSelector
-        provider={provider as any}
+        provider={provider}
         selectedModel={model}
         onSelect={setModel}
       />
@@ -133,6 +139,12 @@ function APISettings() {
           Save API Settings
         </button>
       </div>
+
+      {!isValid && (
+        <div className="alert alert-error">
+          Choose a provider and enter an API key to enable chat and voice.
+        </div>
+      )}
 
       {testStatus === 'error' && (
         <div className="alert alert-error">
@@ -180,7 +192,7 @@ function PersonaSettings() {
           min="0"
           max="100"
           value={persona.warmth}
-          onChange={(e) => handleChange('warmth', parseInt(e.target.value))}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('warmth', parseInt(e.target.value, 10))}
         />
       </div>
 
@@ -195,7 +207,7 @@ function PersonaSettings() {
           min="0"
           max="100"
           value={persona.firmness}
-          onChange={(e) => handleChange('firmness', parseInt(e.target.value))}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('firmness', parseInt(e.target.value, 10))}
         />
       </div>
 
@@ -210,7 +222,7 @@ function PersonaSettings() {
           min="0"
           max="100"
           value={persona.verbosity}
-          onChange={(e) => handleChange('verbosity', parseInt(e.target.value))}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('verbosity', parseInt(e.target.value, 10))}
         />
       </div>
 
@@ -225,7 +237,7 @@ function PersonaSettings() {
           min="0"
           max="100"
           value={persona.humor}
-          onChange={(e) => handleChange('humor', parseInt(e.target.value))}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('humor', parseInt(e.target.value, 10))}
         />
       </div>
 
@@ -240,7 +252,7 @@ function PersonaSettings() {
           min="0"
           max="100"
           value={persona.directness}
-          onChange={(e) => handleChange('directness', parseInt(e.target.value))}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange('directness', parseInt(e.target.value, 10))}
         />
       </div>
 
@@ -259,7 +271,10 @@ function VoiceSettings() {
 
   const handleSave = () => {
     updateSettings({ 
-      voiceConfig: config,
+      voiceConfig: { 
+        ...config, 
+        provider: 'browser', // currently supported engine; Piper is auto-detected in the browser
+      },
       // TODO: Add sound settings to store
     });
     alert('Voice settings saved!');
@@ -275,7 +290,7 @@ function VoiceSettings() {
           <input
             type="checkbox"
             checked={soundEnabled}
-            onChange={(e) => setSoundEnabled(e.target.checked)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => setSoundEnabled(e.target.checked)}
           />
           <span>Enable notification sounds</span>
         </div>
@@ -284,7 +299,7 @@ function VoiceSettings() {
       {soundEnabled && (
         <div className="form-group">
           <label>Sound Style</label>
-          <select value={soundStyle} onChange={(e) => setSoundStyle(e.target.value as any)}>
+          <select value={soundStyle} onChange={(e: ChangeEvent<HTMLSelectElement>) => setSoundStyle(e.target.value as 'default' | 'ios' | 'android')}>
             <option value="default">Default</option>
             <option value="ios">iOS Style</option>
             <option value="android">Android Style</option>
@@ -292,16 +307,12 @@ function VoiceSettings() {
         </div>
       )}
 
-      <div className="form-group">
-        <label>Voice Provider (for voice chat)</label>
-        <select 
-          value={config.provider} 
-          onChange={(e) => setConfig({ ...config, provider: e.target.value as any })}
-        >
-          <option value="browser">Browser TTS (Free)</option>
-          <option value="openai">OpenAI TTS (Requires API key)</option>
-          <option value="elevenlabs">ElevenLabs (Requires API key)</option>
-        </select>
+      <div className="info-box">
+        <h3>Voice Engine</h3>
+        <p>
+          Voice chat currently uses your browser&apos;s speech synthesis. If Piper is running locally, 
+          the app will auto-upgrade to that higher-quality engine. Cloud TTS providers will be added later.
+        </p>
       </div>
 
       <div className="slider-group">
@@ -350,7 +361,7 @@ function ProfileSettings() {
         <input
           type="text"
           value={profile.name || ''}
-          onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setProfile({ ...profile, name: e.target.value })}
           placeholder="What should I call you?"
         />
       </div>
@@ -360,7 +371,7 @@ function ProfileSettings() {
         <input
           type="number"
           value={profile.age || ''}
-          onChange={(e) => setProfile({ ...profile, age: parseInt(e.target.value) })}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setProfile({ ...profile, age: parseInt(e.target.value, 10) })}
           placeholder="Your age"
         />
       </div>
@@ -369,7 +380,7 @@ function ProfileSettings() {
         <label>Relationship Status</label>
         <select 
           value={profile.relationshipStatus || ''} 
-          onChange={(e) => setProfile({ ...profile, relationshipStatus: e.target.value })}
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => setProfile({ ...profile, relationshipStatus: e.target.value })}
         >
           <option value="">Prefer not to say</option>
           <option value="single">Single</option>
@@ -384,7 +395,7 @@ function ProfileSettings() {
         <label>Current Challenges</label>
         <textarea
           value={profile.currentChallenges || ''}
-          onChange={(e) => setProfile({ ...profile, currentChallenges: e.target.value })}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setProfile({ ...profile, currentChallenges: e.target.value })}
           placeholder="What are you working through right now?"
           rows={4}
         />
@@ -394,7 +405,7 @@ function ProfileSettings() {
         <label>Goals</label>
         <textarea
           value={profile.goals || ''}
-          onChange={(e) => setProfile({ ...profile, goals: e.target.value })}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setProfile({ ...profile, goals: e.target.value })}
           placeholder="What do you want to achieve?"
           rows={4}
         />
@@ -404,7 +415,7 @@ function ProfileSettings() {
         <label>Additional Context</label>
         <textarea
           value={profile.additionalContext || ''}
-          onChange={(e) => setProfile({ ...profile, additionalContext: e.target.value })}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setProfile({ ...profile, additionalContext: e.target.value })}
           placeholder="Anything else that would be helpful for the AI to know?"
           rows={4}
         />
@@ -418,7 +429,7 @@ function ProfileSettings() {
 }
 
 function DataSettings() {
-  const { clearMessages } = useStore();
+  const { settings, updateSettings, clearMessages, clearMentorMemory } = useStore();
 
   const handleClearMessages = () => {
     if (confirm('Are you sure? This will delete all conversation history.')) {
@@ -436,6 +447,35 @@ function DataSettings() {
       a.href = url;
       a.download = `growth-hub-backup-${Date.now()}.json`;
       a.click();
+    }
+  };
+
+  const toggleSessionMode = () => {
+    const next = !settings.sessionMode;
+    if (next) {
+      if (!confirm('Enable private session? This stops persisting chat history and removes the stored API key. Data will clear on refresh.')) {
+        return;
+      }
+      localStorage.removeItem('growth-hub-storage');
+      updateSettings({ sessionMode: true, apiConfig: { ...settings.apiConfig, apiKey: '' } });
+      clearMessages();
+    } else {
+      updateSettings({ sessionMode: false });
+    }
+  };
+
+  const wipeAll = () => {
+    if (confirm('Wipe all stored data and reload?')) {
+      localStorage.removeItem('growth-hub-storage');
+      sessionStorage.clear();
+      window.location.reload();
+    }
+  };
+
+  const handleClearMemory = () => {
+    if (confirm('Clear the mentor\'s long-term memory while keeping your chat transcripts?')) {
+      clearMentorMemory();
+      alert('Mentor memory cleared. Future chats will not use past summaries.');
     }
   };
 
@@ -459,11 +499,36 @@ function DataSettings() {
       </div>
 
       <div className="form-group">
+        <label>Mentor Memory</label>
+        <button onClick={handleClearMemory} className="secondary-btn">
+          Clear Mentor Memory
+        </button>
+        <small>
+          Removes long-term summaries the mentor uses across chats, while keeping your saved conversations.
+        </small>
+      </div>
+
+      <div className="form-group">
         <label>Backup & Export</label>
         <button onClick={handleExport} className="secondary-btn">
           Export All Data
         </button>
         <small>Download a backup of all your settings and conversations</small>
+      </div>
+
+      <div className="form-group">
+        <label>Private Session</label>
+        <button onClick={toggleSessionMode} className={settings.sessionMode ? 'secondary-btn' : 'primary-btn'}>
+          {settings.sessionMode ? 'Disable Private Session' : 'Enable Private Session'}
+        </button>
+        <small>{settings.sessionMode ? 'Currently not persisting messages or API keys.' : 'Keep data local by default; enable private session to avoid persistence.'}</small>
+      </div>
+
+      <div className="form-group">
+        <label>Wipe Everything</label>
+        <button onClick={wipeAll} className="danger-btn">
+          Delete All Stored Data
+        </button>
       </div>
     </div>
   );

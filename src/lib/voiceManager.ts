@@ -1,7 +1,9 @@
 /**
  * Enhanced voice management with better male voice selection
- * and quality improvements for Web Speech API
+ * Supports Web Speech API and Piper TTS
  */
+
+export type VoiceEngine = 'browser' | 'piper' | 'openai';
 
 export interface VoiceProfile {
   voice: SpeechSynthesisVoice;
@@ -12,6 +14,9 @@ export interface VoiceProfile {
 export class VoiceManager {
   private voices: SpeechSynthesisVoice[] = [];
   private selectedVoice: SpeechSynthesisVoice | null = null;
+  private engine: VoiceEngine = 'browser';
+  private piperServerUrl = 'http://127.0.0.1:5174';
+  private currentAudio: HTMLAudioElement | null = null;
   
   constructor() {
     this.loadVoices();
@@ -21,6 +26,36 @@ export class VoiceManager {
       speechSynthesis.onvoiceschanged = () => {
         this.loadVoices();
       };
+    }
+  }
+  
+  /**
+   * Set the voice engine
+   */
+  setEngine(engine: VoiceEngine): void {
+    this.engine = engine;
+  }
+  
+  /**
+   * Get current engine
+   */
+  getEngine(): VoiceEngine {
+    return this.engine;
+  }
+  
+  /**
+   * Check if Piper is available
+   */
+  async isPiperAvailable(): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.piperServerUrl}/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: 'test' })
+      });
+      return response.ok;
+    } catch {
+      return false;
     }
   }
 
@@ -178,17 +213,93 @@ export class VoiceManager {
   }
 
   /**
-   * Speak with enhanced quality
+   * Speak with Piper TTS
    */
-  speak(
-    text: string, 
+  private async speakWithPiper(
+    text: string,
+    options: {
+      rate?: number;
+      volume?: number;
+      onStart?: () => void;
+      onEnd?: () => void;
+      onError?: (error: unknown) => void;
+    } = {}
+  ): Promise<void> {
+    try {
+      // Stop any current audio
+      if (this.currentAudio) {
+        this.currentAudio.pause();
+        this.currentAudio = null;
+      }
+      
+      const response = await fetch(`${this.piperServerUrl}/tts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      
+      if (!response.ok) {
+        throw new Error('Piper TTS request failed');
+      }
+      
+      const data = await response.json();
+      
+      // Convert base64 to audio
+      const audioData = atob(data.audio);
+      const arrayBuffer = new ArrayBuffer(audioData.length);
+      const view = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < audioData.length; i++) {
+        view[i] = audioData.charCodeAt(i);
+      }
+      
+      const blob = new Blob([arrayBuffer], { type: 'audio/wav' });
+      const url = URL.createObjectURL(blob);
+      
+      const audio = new Audio(url);
+      audio.volume = options.volume ?? 1.0;
+      audio.playbackRate = options.rate ?? 1.0;
+      
+      this.currentAudio = audio;
+      
+      if (options.onStart) {
+        audio.addEventListener('play', options.onStart, { once: true });
+      }
+      
+      if (options.onEnd) {
+        audio.addEventListener('ended', () => {
+          URL.revokeObjectURL(url);
+          options.onEnd!();
+        }, { once: true });
+      }
+      
+      if (options.onError) {
+        audio.addEventListener('error', options.onError, { once: true });
+      }
+      
+      await audio.play();
+    } catch (err: unknown) {
+      console.error('Piper TTS error:', err);
+      if (options.onError) {
+        options.onError(err);
+      }
+      // Fallback to browser TTS
+      this.engine = 'browser';
+      this.speakWithBrowser(text, options);
+    }
+  }
+  
+  /**
+   * Speak with browser TTS
+   */
+  private speakWithBrowser(
+    text: string,
     options: {
       rate?: number;
       pitch?: number;
       volume?: number;
       onStart?: () => void;
       onEnd?: () => void;
-      onError?: (error: any) => void;
+      onError?: (error: unknown) => void;
     } = {}
   ): void {
     // Cancel any ongoing speech
@@ -215,9 +326,34 @@ export class VoiceManager {
   }
 
   /**
+   * Speak with enhanced quality (auto-selects best engine)
+   */
+  async speak(
+    text: string, 
+    options: {
+      rate?: number;
+      pitch?: number;
+      volume?: number;
+      onStart?: () => void;
+      onEnd?: () => void;
+      onError?: (error: unknown) => void;
+    } = {}
+  ): Promise<void> {
+    if (this.engine === 'piper') {
+      await this.speakWithPiper(text, options);
+    } else {
+      this.speakWithBrowser(text, options);
+    }
+  }
+
+  /**
    * Stop speaking
    */
   stop(): void {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+      this.currentAudio = null;
+    }
     speechSynthesis.cancel();
   }
 
@@ -225,6 +361,9 @@ export class VoiceManager {
    * Pause speaking
    */
   pause(): void {
+    if (this.currentAudio) {
+      this.currentAudio.pause();
+    }
     speechSynthesis.pause();
   }
 
@@ -232,6 +371,9 @@ export class VoiceManager {
    * Resume speaking
    */
   resume(): void {
+    if (this.currentAudio) {
+      this.currentAudio.play();
+    }
     speechSynthesis.resume();
   }
 }

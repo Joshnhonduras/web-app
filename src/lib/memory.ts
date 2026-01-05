@@ -1,7 +1,15 @@
 import type { Message } from '../types';
 
 export interface ExtractedFact {
-  category: 'personal' | 'challenge' | 'goal' | 'relationship' | 'insight';
+  category:
+    | 'personal'
+    | 'challenge'
+    | 'goal'
+    | 'relationship'
+    | 'insight'
+    | 'work'
+    | 'health'
+    | 'habit';
   content: string;
   timestamp: number;
 }
@@ -40,8 +48,16 @@ export function extractFacts(messages: Message[]): ExtractedFact[] {
       }
       
       // Goals/aspirations
-      if (content.includes('want to') || content.includes('goal') || 
-          content.includes('trying to') || content.includes('working on')) {
+      if (
+        content.includes('want to') ||
+        content.includes('goal') ||
+        content.includes('trying to') ||
+        content.includes('working on') ||
+        content.includes('hope to') ||
+        content.includes('hoping to') ||
+        content.includes('aiming to') ||
+        content.includes('my dream is')
+      ) {
         facts.push({
           category: 'goal',
           content: msg.content,
@@ -54,6 +70,56 @@ export function extractFacts(messages: Message[]): ExtractedFact[] {
           content.includes('partner') || content.includes('relationship')) {
         facts.push({
           category: 'relationship',
+          content: msg.content,
+          timestamp: msg.timestamp,
+        });
+      }
+
+      // Work/career
+      if (
+        content.includes('job') ||
+        content.includes('work') ||
+        content.includes('career') ||
+        content.includes('boss') ||
+        content.includes('company') ||
+        content.includes('business')
+      ) {
+        facts.push({
+          category: 'work',
+          content: msg.content,
+          timestamp: msg.timestamp,
+        });
+      }
+
+      // Health/mental state
+      if (
+        content.includes('anxiety') ||
+        content.includes('anxious') ||
+        content.includes('depressed') ||
+        content.includes('panic') ||
+        content.includes('burnout') ||
+        content.includes('stressed') ||
+        content.includes('mental health') ||
+        content.includes('health')
+      ) {
+        facts.push({
+          category: 'health',
+          content: msg.content,
+          timestamp: msg.timestamp,
+        });
+      }
+
+      // Habits/routines
+      if (
+        content.includes('habit') ||
+        content.includes('routine') ||
+        content.includes('discipline') ||
+        content.includes('every day') ||
+        content.includes('daily') ||
+        content.includes('consistency')
+      ) {
+        facts.push({
+          category: 'habit',
           content: msg.content,
           timestamp: msg.timestamp,
         });
@@ -83,11 +149,36 @@ export function extractFacts(messages: Message[]): ExtractedFact[] {
  */
 export function buildContextSummary(facts: ExtractedFact[]): string {
   if (facts.length === 0) return '';
-  
-  const recentFacts = facts.slice(-10); // Last 10 facts
-  
-  const summary = `## Recent Context:\n${recentFacts.map(f => `- [${f.category}] ${f.content}`).join('\n')}`;
-  
+
+  const priority: Record<ExtractedFact['category'], number> = {
+    personal: 0,
+    goal: 1,
+    relationship: 2,
+    work: 3,
+    health: 4,
+    habit: 5,
+    challenge: 6,
+    insight: 7,
+  };
+
+  const recentFacts = facts.slice(-50);
+
+  const selected = recentFacts
+    .slice()
+    .sort((a, b) => {
+      const pa = priority[a.category];
+      const pb = priority[b.category];
+      if (pa !== pb) {
+        return pa - pb;
+      }
+      return a.timestamp - b.timestamp;
+    })
+    .slice(0, 10);
+
+  const summary = `## Recent Context:\n${selected
+    .map((f) => `- [${f.category}] ${f.content}`)
+    .join('\n')}`;
+
   return summary;
 }
 
@@ -104,6 +195,13 @@ export function detectCrisis(message: string): boolean {
     'want to die',
     'better off dead',
     'no point living',
+    "can't take this anymore",
+    "cant take this anymore",
+    "can't do this anymore",
+    'cant do this anymore',
+    'i give up',
+    "i'm done with life",
+    'im done with life',
   ];
   
   const messageLower = message.toLowerCase();

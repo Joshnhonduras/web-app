@@ -22,7 +22,11 @@ export async function fetchOpenRouterModels(): Promise<ModelInfo[]> {
     const response = await fetch('https://openrouter.ai/api/v1/models');
     const data = await response.json();
     
-    return data.data.map((model: any) => {
+    return data.data.map((model: {
+      id: string;
+      pricing?: { prompt?: string; completion?: string };
+      context_length?: number;
+    }) => {
       const isFree = model.pricing?.prompt === '0' && model.pricing?.completion === '0';
       
       return {
