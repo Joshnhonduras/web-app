@@ -90,3 +90,20 @@
   letter-spacing: 0.05em;
   margin: 0;
 }
+
+/* Chrome-specific fix for select dropdown option visibility */
+select option {
+  color: #e8e6e3;
+  background-color: #222222;
+  padding: 8px;
+}
+
+select option:checked {
+  background-color: #8b7355;
+  color: #e8e6e3;
+}
+
+select option:hover {
+  background-color: #2a2a2a;
+}
+
