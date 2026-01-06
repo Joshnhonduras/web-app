@@ -50,7 +50,7 @@ async function fetchWithTimeout(
 export async function sendMessageFreeTier(
   messages: Message[],
   systemPrompt: string
-): Promise<string> {
+): Promise<{ content: string; tokensUsed: number }> {
   try {
     const response = await fetchWithTimeout(`${BACKEND_URL}/api/chat/free-tier`, {
       method: 'POST',

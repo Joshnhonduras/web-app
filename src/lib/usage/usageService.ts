@@ -91,7 +91,7 @@ export function recordMessageUsage(messageLength: number): UsageData {
   const current = getUsageData();
 
   if (!current.trialStartedAt) {
-    initializeTrial();
+    initializeTrial('');
   }
 
   // Estimate tokens (rough: ~1 token per 4 characters)
