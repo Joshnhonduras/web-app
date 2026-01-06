@@ -1,77 +1,126 @@
-import { Link } from 'react-router-dom';
-import './Setup.css';
+import { useNavigate } from 'react-router-dom';
+import { Button } from './components/ui/button';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function Setup() {
+  const navigate = useNavigate();
+
   return (
-    <div className="setup-container">
-      <div className="setup-header">
-        <Link to="/" className="back-btn">← Back</Link>
-        <h1>Set Up Your AI</h1>
+    <div className="min-h-screen bg-[#1a1a1a] text-[#e8e6e3]">
+      {/* Header */}
+      <div className="border-b border-[#2a2a2a] bg-[#161616] px-6 py-6">
+        <div className="mx-auto max-w-4xl">
+          <button
+            onClick={() => navigate('/')}
+            className="mb-6 text-[#b8b5b0] hover:text-[#e8e6e3] transition-colors flex items-center gap-2"
+          >
+            ← Back
+          </button>
+          <h1 className="font-serif text-4xl font-light">Set Up Your AI</h1>
+        </div>
       </div>
 
-      <div className="setup-content">
-        <div className="intro-section">
-          <h2>Get Started for FREE</h2>
-          <p>
-            You can start using Growth Hub right now with free AI models. Most people find
-            these work great for their needs.
-          </p>
-        </div>
-
-        <div className="providers-section">
-          <h3>Choose a Free Provider</h3>
-          
-          <div className="provider-card">
-            <h4>Option 1: Groq (Recommended - 100% Free)</h4>
-            <p>Free API with super-fast inference. All models are free!</p>
-            <ol>
-              <li>
-                Visit <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a> and create account
-              </li>
-              <li>Navigate to API Keys section</li>
-              <li>Create a new API key</li>
-              <li>Copy the key and paste it in Settings</li>
-            </ol>
+      {/* Content */}
+      <section className="px-6 py-24">
+        <div className="mx-auto max-w-4xl space-y-12">
+          {/* Intro */}
+          <div className="space-y-4 text-center">
+            <h2 className="font-serif text-2xl font-light">Get Started for FREE</h2>
+            <p className="text-[#b8b5b0]">
+              You can start using Growth Hub right now with free AI models. Most people find these work great for their needs.
+            </p>
           </div>
 
-          <div className="provider-card">
-            <h4>Option 2: OpenRouter</h4>
-            <p>Access to multiple free AND paid models</p>
-            <ol>
-              <li>
-                Visit <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a> and sign up
-              </li>
-              <li>Go to Keys section and create a new API key</li>
-              <li>
-                <strong>IMPORTANT:</strong> Go to{' '}
-                <a href="https://openrouter.ai/settings/privacy" target="_blank" rel="noopener">
-                  Privacy Settings
-                </a>
-              </li>
-              <li>Enable "Allow free model usage" (required for free models)</li>
-              <li>Copy your API key and add it in Settings</li>
-              <li>Select a free model (ends with :free)</li>
-            </ol>
-            <div className="privacy-note">
-              ⚠️ Free OpenRouter models require allowing your data to be used for training.
-              If you want complete privacy, use Groq or paid models instead.
+          <div className="space-y-8">
+            {/* Option 1: Groq */}
+            <div className="border border-[#2a2a2a] rounded-lg bg-[#222222] p-8 space-y-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#8b7355]/10">
+                    <svg className="h-5 w-5 text-[#8b7355]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-xl font-light text-[#e8e6e3]">Option 1: Groq (Recommended)</h3>
+                </div>
+                <p className="text-sm text-[#b8b5b0] pl-13">100% Free • Super Fast • Complete Privacy</p>
+              </div>
+
+              <ol className="space-y-3 pl-4 list-decimal text-[#b8b5b0]">
+                <li>
+                  Visit{' '}
+                  <a href="https://console.groq.com" target="_blank" rel="noopener" className="text-[#8b7355] hover:text-[#9d8164] transition-colors">
+                    console.groq.com
+                  </a>{' '}
+                  and create an account
+                </li>
+                <li>Navigate to the API Keys section</li>
+                <li>Click "Create API Key"</li>
+                <li>Copy the key and paste it in Settings</li>
+              </ol>
+
+              <div className="flex gap-2 rounded-lg bg-[#1a1a1a] p-3 text-sm text-[#b8b5b0]">
+                <CheckCircle2 className="h-5 w-5 text-[#8b7355] flex-shrink-0" />
+                <span>Completely free, unlimited tokens, your conversations stay private</span>
+              </div>
+            </div>
+
+            {/* Option 2: OpenRouter */}
+            <div className="border border-[#2a2a2a] rounded-lg bg-[#222222] p-8 space-y-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#6b8e9f]/10">
+                    <svg className="h-5 w-5 text-[#6b8e9f]" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="font-serif text-xl font-light text-[#e8e6e3]">Option 2: OpenRouter</h3>
+                </div>
+                <p className="text-sm text-[#b8b5b0] pl-13">Free & Paid Models • 20+ Model Variety</p>
+              </div>
+
+              <ol className="space-y-3 pl-4 list-decimal text-[#b8b5b0]">
+                <li>
+                  Visit{' '}
+                  <a href="https://openrouter.ai" target="_blank" rel="noopener" className="text-[#6b8e9f] hover:text-[#7a9ba8] transition-colors">
+                    openrouter.ai
+                  </a>{' '}
+                  and sign up
+                </li>
+                <li>Go to Keys section and create a new API key</li>
+                <li>
+                  Visit{' '}
+                  <a href="https://openrouter.ai/settings/privacy" target="_blank" rel="noopener" className="text-[#6b8e9f] hover:text-[#7a9ba8] transition-colors">
+                    Privacy Settings
+                  </a>
+                </li>
+                <li>Enable "Allow free model usage"</li>
+                <li>Copy your API key and add it in Settings</li>
+                <li>Select a free model (ends with :free)</li>
+              </ol>
+
+              <div className="rounded-lg bg-[#2a2416] p-3 border border-[#6b6a62]/20 text-sm text-[#b8b5b0]">
+                <p className="font-medium text-[#d4a574] mb-1">⚠️ Privacy Note</p>
+                <p>Free OpenRouter models may use your data for training. For complete privacy, use Groq or paid models.</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="upgrade-section">
-          <h3>Want More?</h3>
-          <p>
-            If you need higher quality or faster responses in the future, you can always
-            upgrade to a paid API service like OpenAI. But for most people, the free
-            models work just fine!
-          </p>
+          {/* Next Steps */}
+          <div className="rounded-lg border border-[#2a2a2a] bg-[#222222] p-8 space-y-4">
+            <h3 className="font-serif text-lg font-light text-[#e8e6e3]">Ready to Start?</h3>
+            <p className="text-[#b8b5b0]">
+              Once you have your API key, go to Settings to complete the setup. You'll have instant access to all modules and features.
+            </p>
+            <Button
+              onClick={() => navigate('/masculine-mentor/settings')}
+              className="bg-[#8b7355] px-8 py-6 text-base font-medium text-white hover:bg-[#9d8164] transition-colors w-full"
+            >
+              Continue to Settings →
+            </Button>
+          </div>
         </div>
-
-        <Link to="/masculine-mentor/settings" className="continue-btn">
-          Continue to Settings →
-        </Link>
-      </div>
+      </section>
     </div>
   );
 }
