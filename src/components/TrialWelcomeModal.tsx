@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { getEstimatedWords, initializeTrial } from '../lib/usage/usageService';
 import './TrialWelcomeModal.css';
 
@@ -16,7 +16,7 @@ export function TrialWelcomeModal({ isOpen, onClose, onEmailSubmit }: TrialWelco
   const [showApiKeyHelp, setShowApiKeyHelp] = useState(false);
   const estimatedWords = getEstimatedWords(TOKEN_LIMIT);
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleEmailSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (email && email.includes('@')) {
       initializeTrial(email);

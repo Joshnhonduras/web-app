@@ -10,10 +10,13 @@ interface ErrorBoundaryState {
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
-  state: ErrorBoundaryState = {
-    hasError: false,
-    error: undefined,
-  };
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = {
+      hasError: false,
+      error: undefined,
+    };
+  }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error };
@@ -25,6 +28,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render() {
     if (this.state.hasError) {
+      const isDev = typeof window !== 'undefined' && (window as any).__DEV__;
       return (
         <div className="error-boundary">
           <h1>Something went wrong.</h1>
@@ -32,7 +36,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             The app hit an unexpected error. Try refreshing the page. If this keeps happening,
             revisit your API settings or restart Growth Hub.
           </p>
-          {process.env.NODE_ENV === 'development' && this.state.error && (
+          {isDev && this.state.error && (
             <pre>{this.state.error.message}</pre>
           )}
         </div>
