@@ -8,14 +8,16 @@ import ModelSelector from './components/ModelSelector';
 import type { APIConfig } from '../../types';
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState<'api' | 'persona' | 'voice' | 'profile' | 'data'>('api');
+  const [activeTab, setActiveTab] = useState<'api' | 'persona' | 'voice' | 'profile' | 'appearance' | 'data'>('api');
+  const { settings } = useStore();
+  const currentTheme = settings.theme || 'dark';
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a] text-[#e8e6e3]">
+    <div className={currentTheme === 'light' ? 'min-h-screen bg-white text-gray-900' : 'min-h-screen bg-[#1a1a1a] text-[#e8e6e3]'}>
       {/* Header */}
-      <div className="border-b border-[#2a2a2a] bg-[#161616] px-6 py-6">
+      <div className={currentTheme === 'light' ? 'border-b border-gray-200 bg-gray-50 px-6 py-6' : 'border-b border-[#2a2a2a] bg-[#161616] px-6 py-6'}>
         <div className="mx-auto max-w-6xl">
-          <Link to="/masculine-mentor" className="mb-6 text-[#b8b5b0] hover:text-[#e8e6e3] transition-colors flex items-center gap-2">
+          <Link to="/masculine-mentor" className={currentTheme === 'light' ? 'mb-6 text-gray-600 hover:text-gray-900 transition-colors flex items-center gap-2' : 'mb-6 text-[#b8b5b0] hover:text-[#e8e6e3] transition-colors flex items-center gap-2'}>
             ← Back to Chat
           </Link>
           <h1 className="font-serif text-4xl font-light">Settings</h1>
@@ -23,22 +25,23 @@ export default function Settings() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-[#2a2a2a] bg-[#161616] px-6 py-0">
+      <div className={currentTheme === 'light' ? 'border-b border-gray-200 bg-gray-50 px-6 py-0' : 'border-b border-[#2a2a2a] bg-[#161616] px-6 py-0'}>
         <div className="mx-auto max-w-6xl flex gap-8">
-          {(['api', 'persona', 'voice', 'profile', 'data'] as const).map((tab) => (
+          {(['api', 'persona', 'voice', 'profile', 'appearance', 'data'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-0 py-4 border-b-2 transition-colors capitalize ${
                 activeTab === tab
-                  ? 'border-[#8b7355] text-[#e8e6e3]'
-                  : 'border-transparent text-[#b8b5b0] hover:text-[#e8e6e3]'
+                  ? currentTheme === 'light' ? 'border-blue-600 text-gray-900' : 'border-[#8b7355] text-[#e8e6e3]'
+                  : currentTheme === 'light' ? 'border-transparent text-gray-600 hover:text-gray-900' : 'border-transparent text-[#b8b5b0] hover:text-[#e8e6e3]'
               }`}
             >
               {tab === 'api' && 'API Setup'}
               {tab === 'persona' && 'Persona'}
               {tab === 'voice' && 'Voice & Sounds'}
               {tab === 'profile' && 'About You'}
+              {tab === 'appearance' && 'Appearance'}
               {tab === 'data' && 'Privacy'}
             </button>
           ))}
@@ -46,20 +49,21 @@ export default function Settings() {
       </div>
 
       {/* Content */}
-      <div className="px-6 py-12">
+      <div className={currentTheme === 'light' ? 'px-6 py-12 bg-white' : 'px-6 py-12'}>
         <div className="mx-auto max-w-6xl">
-          {activeTab === 'api' && <APISettings />}
-          {activeTab === 'persona' && <PersonaSettings />}
-          {activeTab === 'voice' && <VoiceSettings />}
-          {activeTab === 'profile' && <ProfileSettings />}
-          {activeTab === 'data' && <DataSettings />}
+          {activeTab === 'api' && <APISettings theme={currentTheme} />}
+          {activeTab === 'persona' && <PersonaSettings theme={currentTheme} />}
+          {activeTab === 'voice' && <VoiceSettings theme={currentTheme} />}
+          {activeTab === 'profile' && <ProfileSettings theme={currentTheme} />}
+          {activeTab === 'appearance' && <AppearanceSettings theme={currentTheme} />}
+          {activeTab === 'data' && <DataSettings theme={currentTheme} />}
         </div>
       </div>
     </div>
   );
 }
 
-function APISettings() {
+function APISettings({ theme }: { theme: 'light' | 'dark' }) {
   const { settings, updateSettings } = useStore();
   const [apiKey, setApiKey] = useState(settings.apiConfig.apiKey);
   const [provider, setProvider] = useState<APIConfig['provider']>(settings.apiConfig.provider || 'openrouter');
@@ -172,7 +176,7 @@ function APISettings() {
   );
 }
 
-function PersonaSettings() {
+function PersonaSettings({ theme }: { theme: 'light' | 'dark' }) {
   const { settings, updateSettings } = useStore();
   const [persona, setPersona] = useState(settings.personaConfig);
 
@@ -234,7 +238,7 @@ function PersonaSettings() {
   );
 }
 
-function VoiceSettings() {
+function VoiceSettings({ theme }: { theme: 'light' | 'dark' }) {
   const { settings, updateSettings } = useStore();
   const [config, setConfig] = useState(settings.voiceConfig);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -324,7 +328,7 @@ function VoiceSettings() {
   );
 }
 
-function ProfileSettings() {
+function ProfileSettings({ theme }: { theme: 'light' | 'dark' }) {
   const { settings, updateSettings } = useStore();
   const [profile, setProfile] = useState(settings.userProfile);
 
@@ -426,7 +430,61 @@ function ProfileSettings() {
   );
 }
 
-function DataSettings() {
+function AppearanceSettings({ theme }: { theme: 'light' | 'dark' }) {
+  const { settings, updateSettings } = useStore();
+
+  const toggleTheme = () => {
+    const newTheme = settings.theme === 'dark' ? 'light' : 'dark';
+    updateSettings({ theme: newTheme });
+  };
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="font-serif text-2xl font-light mb-2">Appearance</h2>
+        <p className={theme === 'light' ? 'text-gray-600' : 'text-[#b8b5b0]'}>
+          Customize how GrowthHub looks.
+        </p>
+      </div>
+
+      <div className={theme === 'light' ? 'bg-gray-50 border border-gray-200 rounded-lg p-6 space-y-4' : 'bg-[#222222] border border-[#2a2a2a] rounded-lg p-6 space-y-4'}>
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="font-medium mb-1">Theme</h3>
+            <p className={theme === 'light' ? 'text-sm text-gray-600' : 'text-sm text-[#b8b5b0]'}>
+              Choose between light and dark mode
+            </p>
+          </div>
+          <button
+            onClick={toggleTheme}
+            className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors ${
+              theme === 'dark'
+                ? 'bg-[#8b7355]'
+                : 'bg-blue-600'
+            }`}
+          >
+            <span
+              className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${
+                theme === 'dark' ? 'translate-x-7' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+        <div className={theme === 'light' ? 'text-xs text-gray-500' : 'text-xs text-[#b8b5b0]'}>
+          Currently using <strong>{theme === 'dark' ? '🌙 Dark' : '☀️ Light'}</strong> theme
+        </div>
+      </div>
+
+      <div className={theme === 'light' ? 'bg-blue-50 border border-blue-200 rounded-lg p-4' : 'bg-[#222222] border border-[#2a2a2a] rounded-lg p-4'}>
+        <p className={theme === 'light' ? 'text-sm text-blue-900' : 'text-sm text-[#b8b5b0]'}>
+          💡 Theme preference is saved automatically and applies across all pages and modules.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function DataSettings({ theme }: { theme: 'light' | 'dark' }) {
   const { settings, updateSettings, clearMessages, clearMentorMemory } = useStore();
 
   const handleClearMessages = () => {

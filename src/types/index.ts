@@ -52,4 +52,5 @@ export interface AppSettings {
   userProfile: UserProfile;
   sessionMode?: boolean; // when true, limit or skip persistence
   trial?: TrialStatus;
+  theme?: 'light' | 'dark';
 }

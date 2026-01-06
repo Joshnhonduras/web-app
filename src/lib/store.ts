@@ -52,6 +52,7 @@ export const useStore = create<AppStore>()(
         },
         userProfile: {},
         sessionMode: false,
+        theme: 'dark' as 'light' | 'dark',
       },
       conversations: [],
       longTermSummary: '',
