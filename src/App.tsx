@@ -5,6 +5,7 @@ import Setup from './Setup';
 import Chat from './modules/masculine-mentor/Chat';
 import Settings from './modules/masculine-mentor/Settings';
 import VoiceChat from './modules/masculine-mentor/VoiceChat';
+import { PWAUpdatePrompt } from './components/PWAUpdatePrompt';
 
 export default function App() {
   const { settings } = useStore();
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/masculine-mentor/settings" element={<Settings />} />
           <Route path="/masculine-mentor/voice" element={<VoiceChat />} />
         </Routes>
+        <PWAUpdatePrompt />
       </BrowserRouter>
     </div>
   );

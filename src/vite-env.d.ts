@@ -6,6 +6,8 @@ declare module '*.css' {
 interface ImportMetaEnv {
   readonly VITE_BACKEND_URL?: string;
   readonly VITE_STRIPE_PUBLISHABLE_KEY?: string;
+  readonly PROD: boolean;
+  readonly DEV: boolean;
 }
 
 interface ImportMeta {
